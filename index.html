@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rolando Carranza — Security Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #141618;
+      --bg2:       #1c1f22;
+      --bg3:       #222629;
+      --bg4:       #2a2e33;
+      --border:    #2e3338;
+      --border2:   #383d44;
+      --teal:      #2dd4bf;
+      --teal-dim:  #1a9e8f;
+      --teal-glow: rgba(45, 212, 191, 0.1);
+      --text:      #c8cdd4;
+      --text2:     #8b929c;
+      --bright:    #f0f4f8;
+      --name:      #f0f4f8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      height: 64px;
+      background: rgba(20, 22, 24, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--teal);
+    }
+
+    nav ul { display: flex; gap: 0.4rem; list-style: none; }
+
+    nav a {
+      display: block;
+      padding: 0.45rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+
+    nav a:hover { color: var(--bright); background: var(--bg3); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 10rem 2.5rem 6rem;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--teal-glow);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--teal);
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+
+    .pill-dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--name);
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.25s;
+    }
+
+    .hero-role {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--teal);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.4s;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.75;
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.55s;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.7s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: #0c1412;
+    }
+
+    .btn-primary:hover {
+      background: #34e8d0;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(45, 212, 191, 0.25);
+    }
+
+    .btn-ghost {
+      background: var(--bg3);
+      color: var(--text);
+      border: 1px solid var(--border2);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg4);
+      color: var(--bright);
+      transform: translateY(-2px);
+    }
+
+    /* ── STATS ── */
+    .stats-bar {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem;
+    }
+
+    .stats-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .stat { display: flex; flex-direction: column; gap: 0.2rem; }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--name);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--text2);
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 5rem 2.5rem;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--bright);
+      margin-bottom: 0.75rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .section-intro {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text2);
+      max-width: 560px;
+      margin-bottom: 3rem;
+      line-height: 1.7;
+    }
+
+    /* ── CARD GRID ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(45,212,191,0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .card:hover { border-color: rgba(45,212,191,0.25); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.25); }
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      background: var(--teal-glow);
+      border: 1px solid rgba(45,212,191,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 0.6rem;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── STORY BLOCK ── */
+    .story-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 2.25rem;
+      max-width: 720px;
+    }
+
+    .story-block p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.85;
+    }
+
+    .story-block p + p { margin-top: 1rem; }
+
+    /* ── TIMELINE ── */
+    .timeline { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1.65rem;
+    }
+
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--border2);
+      border: 2px solid var(--border2);
+      flex-shrink: 0;
+    }
+
+    .tl-item:first-child .tl-dot {
+      background: var(--teal);
+      border-color: var(--teal);
+      box-shadow: 0 0 10px rgba(45,212,191,0.4);
+    }
+
+    .tl-line {
+      width: 1px;
+      background: var(--border);
+      flex: 1;
+      min-height: 40px;
+      margin-top: 6px;
+    }
+
+    .tl-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: border-color 0.18s;
+    }
+
+    .tl-card:hover { border-color: var(--border2); }
+
+    .tl-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.2rem;
+      flex-wrap: wrap;
+    }
+
+    .tl-company { font-size: 1rem; font-weight: 600; color: var(--bright); }
+    .tl-date { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text2); white-space: nowrap; padding-top: 3px; }
+    .tl-role { font-size: 0.82rem; font-weight: 500; color: var(--teal); margin-bottom: 0.75rem; }
+    .tl-desc { font-size: 0.875rem; font-weight: 300; color: var(--text); line-height: 1.65; margin-bottom: 1rem; }
+
+    /* ── TAGS ── */
+    .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.66rem;
+      border-radius: 6px;
+    }
+
+    .tag-teal  { background: rgba(45,212,191,0.1);  color: var(--teal);  border: 1px solid rgba(45,212,191,0.2); }
+    .tag-grey  { background: rgba(139,146,156,0.08); color: var(--text2); border: 1px solid var(--border); }
+    .tag-amber { background: rgba(251,191,36,0.1);  color: #fbbf24;      border: 1px solid rgba(251,191,36,0.2); }
+    .tag-red   { background: rgba(248,113,113,0.1); color: #f87171;      border: 1px solid rgba(248,113,113,0.2); }
+
+    /* ── PROJECT CARDS ── */
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: all 0.2s;
+    }
+
+    .project-card:hover {
+      border-color: rgba(45,212,191,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .project-icon { font-size: 1.5rem; }
+
+    .project-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.67rem;
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .status-active  { background: rgba(45,212,191,0.1);  color: var(--teal);  border: 1px solid rgba(45,212,191,0.25); }
+    .status-wip     { background: rgba(251,191,36,0.1);  color: #fbbf24;      border: 1px solid rgba(251,191,36,0.25); }
+    .status-planned { background: rgba(139,146,156,0.08); color: var(--text2); border: 1px solid var(--border); }
+
+    .project-card h3 { font-size: 1rem; font-weight: 600; color: var(--bright); margin-bottom: 0.6rem; }
+    .project-card p  { font-size: 0.875rem; font-weight: 300; color: var(--text); line-height: 1.65; margin-bottom: 1rem; }
+
+    /* ── CONTACT ── */
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .contact-links { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 400;
+      transition: all 0.15s;
+    }
+
+    .contact-link:hover {
+      border-color: rgba(45,212,191,0.3);
+      color: var(--bright);
+      transform: translateX(4px);
+    }
+
+    .contact-link-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--teal);
+      min-width: 70px;
+    }
+
+    .contact-note {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .contact-note p {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    .highlight { color: var(--name); font-weight: 600; }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); max-width: 1080px; margin: 0 auto; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+    }
+
+    footer span { color: var(--teal); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      nav { padding: 0 1.5rem; }
+      .hero { padding: 8rem 1.5rem 4rem; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .section { padding: 3.5rem 1.5rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      .contact-wrap { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      nav ul { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">rcarranza.dev</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-pill">
+      <div class="pill-dot"></div>
+      Network Security &nbsp;·&nbsp; Cloud Security &nbsp;·&nbsp; AI Security
+    </div>
+    <h1>Rolando<br>Carranza</h1>
+    <p class="hero-role">Network Security Engineer at American Express</p>
+    <p class="hero-desc">
+      5+ years hardening systems, responding to real threats, and building at the intersection of cloud and AI security. Based in Phoenix, AZ — open to remote opportunities.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#about" class="btn btn-ghost">My Story</a>
+      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Years security experience</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">American Express</div>
+        <div class="stat-label">Current — PCI-DSS environment</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Real incidents responded to</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">Locally hosted security lab</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <p class="section-label">about</p>
+    <h2>Hi, I'm Rolando.</h2>
+    <p class="section-intro">My path into security started with a real incident — not a simulation. That hands-on experience shapes how I approach every role.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Enterprise Security</h3>
+        <p>Palo Alto Networks firewall engineering in a PCI-DSS regulated financial environment at American Express — where every decision is audited and every misconfiguration costs real money.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>Real Incident Response</h3>
+        <p>First responder during a live ransomware attack and directly involved in a CEO impersonation BEC investigation. Practical experience navigating security incidents under pressure with real organizational impact.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🤖</div>
+        <h3>AI Security</h3>
+        <p>Building a locally hosted AI security lab — exploring LLM vulnerabilities, prompt injection mitigation, and secure AI infrastructure on the leading edge of the field.</p>
+      </div>
+    </div>
+
+    <div class="story-block">
+      <p>My path into security started in the data center at Milestone Technologies — learning how physical infrastructure works at scale before moving into IT support at Core Machinery. There I had direct exposure to two significant security incidents: a ransomware attack where I led internal response communications, and a CEO impersonation BEC fraud that highlighted the human element in security failures. Those experiences pointed me toward network security, and today I work at American Express managing Palo Alto firewall infrastructure across on-premises and multi-cloud environments.</p>
+      <p>Outside of work I'm usually at the gym, out on the golf course, or deep in a sci-fi novel. I've always been drawn to big picture thinking — whether that's the ethics of AI in science fiction, the scale of the universe through astronomy, or the intersection of emerging technology and human behavior. That same curiosity is what keeps pulling me toward the evolving edges of security.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EXPERIENCE -->
+  <section class="section" id="experience">
+    <p class="section-label">experience</p>
+    <h2>The path here.</h2>
+    <p class="section-intro">Five years of progressive security experience — from data center hardware to enterprise cloud firewall engineering.</p>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-top">
+            <div>
+              <div class="tl-company">American Express</div>
+              <div class="tl-role">Network Security Engineer</div>
+            </div>
+            <div class="tl-date">Sep 2024 – Present</div>
+          </div>
+          <p class="tl-desc">Managing Palo Alto Networks firewall infrastructure across on-premises and multi-cloud environments (GCP / AWS). Contributing to CI/CD security pipelines via Terraform and GitHub. Leveraging Elastic SIEM for log analysis and anomaly detection in a PCI-DSS regulated financial environment.</p>
+          <div class="tags">
+            <span class="tag tag-teal">Palo Alto Networks</span>
+            <span class="tag tag-teal">GCP</span>
+            <span class="tag tag-teal">AWS</span>
+            <span class="tag tag-teal">Elastic SIEM</span>
+            <span class="tag tag-grey">Terraform</span>
+            <span class="tag tag-grey">IaC</span>
+            <span class="tag tag-amber">PCI-DSS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-top">
+            <div>
+              <div class="tl-company">Core Machinery</div>
+              <div class="tl-role">IT Support Engineer</div>
+            </div>
+            <div class="tl-date">Jan 2023 – Sep 2024</div>
+          </div>
+          <p class="tl-desc">First responder during a ransomware attack — led internal communications across 250+ users and 8 locations; full server restoration achieved without ransom payment. Involved in the investigation of a CEO impersonation BEC incident. Led company-wide Meraki network upgrade and physical security overhaul. Conducted phishing simulation campaigns and security awareness training.</p>
+          <div class="tags">
+            <span class="tag tag-red">Ransomware Response</span>
+            <span class="tag tag-red">BEC Incident</span>
+            <span class="tag tag-teal">Cisco Meraki</span>
+            <span class="tag tag-grey">Phishing Simulation</span>
+            <span class="tag tag-grey">250+ Users</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-dot"></div>
+        </div>
+        <div class="tl-card">
+          <div class="tl-top">
+            <div>
+              <div class="tl-company">Milestone Technologies</div>
+              <div class="tl-role">IC3 Data Center Technician</div>
+            </div>
+            <div class="tl-date">Feb 2021 – Dec 2022</div>
+          </div>
+          <p class="tl-desc">Enterprise server, switch, and firewall repair in a high-availability data center environment. Cross-functional coordination with sysadmin, network engineering, and DevOps teams via ServiceNow. Physical security enforcement and hardware lifecycle management.</p>
+          <div class="tags">
+            <span class="tag tag-grey">Data Center</span>
+            <span class="tag tag-grey">ServiceNow</span>
+            <span class="tag tag-teal">Physical Security</span>
+            <span class="tag tag-grey">Hardware</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <p class="section-label">projects</p>
+    <h2>What I'm building.</h2>
+    <p class="section-intro">Personal security research projects that extend the work I do professionally into new territory.</p>
+
+    <div class="card-grid">
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🖥️</div>
+          <span class="project-status status-active">Active</span>
+        </div>
+        <h3>AI Security Homelab</h3>
+        <p>Locally hosted LLM stack on hardened Ubuntu 24.04 — Ollama, Open WebUI, Nginx reverse proxy, Docker isolated networking. Threat modeled for prompt injection, BEC-via-LLM, and steganography vectors. Defense-in-depth with UFW, Fail2Ban, AppArmor, and auditd.</p>
+        <div class="tags">
+          <span class="tag tag-teal">Ubuntu</span>
+          <span class="tag tag-teal">Docker</span>
+          <span class="tag tag-teal">Ollama</span>
+          <span class="tag tag-teal">Nginx</span>
+          <span class="tag tag-grey">Llama 3.2</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🔀</div>
+          <span class="project-status status-wip">In Progress</span>
+        </div>
+        <h3>VLAN Network Segmentation</h3>
+        <p>Enterprise-grade network segmentation using a NETGEAR GS308EP managed switch — isolating trusted devices, the homelab server, and IoT devices into separate VLANs with restricted inter-segment routing. Port mirroring for Wireshark traffic analysis.</p>
+        <div class="tags">
+          <span class="tag tag-teal">VLANs</span>
+          <span class="tag tag-grey">NETGEAR GS308EP</span>
+          <span class="tag tag-grey">Zero Trust</span>
+          <span class="tag tag-grey">Wireshark</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <div class="project-icon">📬</div>
+          <span class="project-status status-planned">Planned</span>
+        </div>
+        <h3>Secure AI Email Assistant</h3>
+        <p>Locally orchestrated email management using Gmail API — metadata-only processing to eliminate the prompt injection attack surface. Two-way Google Calendar integration with human-in-the-loop approval for all write actions. RAG pipeline for current threat intelligence.</p>
+        <div class="tags">
+          <span class="tag tag-grey">Python</span>
+          <span class="tag tag-grey">Gmail API</span>
+          <span class="tag tag-amber">RAG</span>
+          <span class="tag tag-grey">OAuth 2.0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section class="section" id="contact">
+    <p class="section-label">contact</p>
+    <h2>Let's connect.</h2>
+    <p class="section-intro">Open to conversations about security engineering, cloud infrastructure, AI security research, or the right opportunity.</p>
+
+    <div class="contact-wrap">
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/rolando-carranza-08859a21a" class="contact-link" target="_blank">
+          <span class="contact-link-label">LinkedIn</span>
+          linkedin.com/in/rolando-carranza
+        </a>
+        <a href="https://github.com/rcarranza-dev" class="contact-link" target="_blank">
+          <span class="contact-link-label">GitHub</span>
+          github.com/rcarranza-dev
+        </a>
+        <a href="/cdn-cgi/l/email-protection#b6cfd9c3c49bc6d9c4c2d0d9dadfd99bd3dbd7dfdaf6d1dbd7dfda98d5d9db" class="contact-link">
+          <span class="contact-link-label">Email</span>
+          <span class="__cf_email__" data-cfemail="8ff6e0fafda2ffe0fdfbe9e0e3e6e0a2eae2eee6e3cfe8e2eee6e3a1ece0e2">[email&#160;protected]</span>
+        </a>
+      </div>
+
+      <div class="contact-note">
+        <p>
+          I'm <span class="highlight">Rolando Carranza</span> — a Network Security Engineer based in Phoenix, AZ with experience spanning data center operations, enterprise IT support, and cloud-native firewall engineering at American Express.
+          <br><br>
+          Whether you're a recruiter, a fellow security professional, or someone building something interesting at the intersection of cloud and AI security — I'd love to hear from you.
+          <br><br>
+          📍 Phoenix, AZ Metro &nbsp;·&nbsp; Open to remote opportunities
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <fo
