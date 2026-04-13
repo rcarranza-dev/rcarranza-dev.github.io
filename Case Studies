@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incident Case Studies — Rolando Carranza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #141618;
+      --bg2:       #1c1f22;
+      --bg3:       #222629;
+      --bg4:       #2a2e33;
+      --border:    #2e3338;
+      --border2:   #383d44;
+      --teal:      #2dd4bf;
+      --teal-dim:  #1a9e8f;
+      --teal-glow: rgba(45, 212, 191, 0.1);
+      --text:      #c8cdd4;
+      --text2:     #8b929c;
+      --bright:    #f0f4f8;
+      --name:      #f0f4f8;
+      --red:       #f87171;
+      --red-glow:  rgba(248, 113, 113, 0.1);
+      --amber:     #fbbf24;
+      --amber-glow: rgba(251, 191, 36, 0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      height: 64px;
+      background: rgba(20, 22, 24, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    nav ul { display: flex; gap: 0.4rem; list-style: none; }
+
+    nav a {
+      display: block;
+      padding: 0.45rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+
+    nav a:hover { color: var(--bright); background: var(--bg3); }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--teal);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      transition: all 0.15s;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+
+    .back-link:hover { color: var(--bright); transform: translateX(-4px); }
+
+    .back-arrow { font-size: 1rem; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 8rem 2.5rem 2rem;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--name);
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.2s;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text2);
+      max-width: 600px;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.35s;
+    }
+
+    /* ── CASE STUDY ── */
+    .case-study {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 5rem;
+    }
+
+    .case-study + .case-study { padding-top: 0; }
+
+    .cs-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.45s;
+    }
+
+    .cs-card:nth-child(2) { animation-delay: 0.55s; }
+
+    .cs-banner {
+      padding: 2rem 2.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .cs-banner-left { flex: 1; min-width: 280px; }
+
+    .cs-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+    }
+
+    .cs-type-ransomware {
+      background: var(--red-glow);
+      color: var(--red);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+    }
+
+    .cs-type-bec {
+      background: var(--amber-glow);
+      color: var(--amber);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .cs-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--bright);
+      margin-bottom: 0.3rem;
+    }
+
+    .cs-role {
+      font-size: 0.88rem;
+      font-weight: 400;
+      color: var(--text2);
+    }
+
+    .cs-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 200px;
+    }
+
+    .cs-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+
+    .cs-meta-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--teal);
+      min-width: 80px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── OUTCOME STRIP ── */
+    .cs-outcome {
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    .cs-outcome-success {
+      background: rgba(45, 212, 191, 0.04);
+    }
+
+    .cs-outcome-loss {
+      background: rgba(251, 191, 36, 0.04);
+    }
+
+    .cs-outcome-icon { font-size: 1rem; }
+
+    .cs-outcome-text { color: var(--text); font-weight: 400; }
+
+    .cs-outcome-highlight-green { color: var(--teal); font-weight: 600; }
+    .cs-outcome-highlight-amber { color: var(--amber); font-weight: 600; }
+
+    /* ── BODY ── */
+    .cs-body { padding: 2.5rem; }
+
+    .cs-section { margin-bottom: 2.5rem; }
+    .cs-section:last-child { margin-bottom: 0; }
+
+    .cs-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .cs-section h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 0.75rem;
+    }
+
+    .cs-section p {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.8;
+      max-width: 720px;
+    }
+
+    .cs-section p + p { margin-top: 0.75rem; }
+
+    /* ── ATTACK CHAIN ── */
+    .attack-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 1.25rem 0;
+    }
+
+    .chain-step {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1.25rem;
+      align-items: start;
+      position: relative;
+      padding: 1rem 0;
+    }
+
+    .chain-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 60px;
+      top: calc(1rem + 28px);
+      bottom: 0;
+      width: 1px;
+      background: var(--border2);
+    }
+
+    .chain-phase {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: center;
+      padding: 0.4rem 0.6rem;
+      background: var(--red-glow);
+      border: 1px solid rgba(248, 113, 113, 0.15);
+      border-radius: 6px;
+    }
+
+    .chain-phase-amber {
+      color: var(--amber);
+      background: var(--amber-glow);
+      border-color: rgba(251, 191, 36, 0.15);
+    }
+
+    .chain-desc {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.65;
+      padding-top: 0.2rem;
+    }
+
+    /* ── IOC LIST ── */
+    .ioc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .ioc-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .ioc-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border2);
+      margin-top: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    .ioc-bullet-red { background: var(--red); }
+    .ioc-bullet-teal { background: var(--teal); }
+    .ioc-bullet-amber { background: var(--amber); }
+
+    /* ── KEY TAKEAWAYS ── */
+    .takeaways {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .takeaway {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .takeaway p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .takeaway-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--teal);
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── PREVENTION CONTROLS ── */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .control-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+    }
+
+    .control-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--teal-glow);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .control-text { flex: 1; }
+
+    .control-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 0.2rem;
+    }
+
+    .control-desc {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); max-width: 1080px; margin: 0 auto; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+    }
+
+    footer span { color: var(--teal); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      nav { padding: 0 1.5rem; }
+      .page-header { padding: 7rem 1.5rem 2rem; }
+      .case-study { padding: 2rem 1.5rem 3rem; }
+      .cs-banner { padding: 1.5rem; }
+      .cs-body { padding: 1.5rem; }
+      .cs-outcome { padding: 0.8rem 1.5rem; }
+      .takeaways { grid-template-columns: 1fr; }
+      .controls-grid { grid-template-columns: 1fr; }
+      .chain-step { grid-template-columns: 100px 1fr; gap: 0.75rem; }
+    }
+
+    @media (max-width: 560px) {
+      nav ul { display: none; }
+      .chain-step { grid-template-columns: 1fr; }
+      .chain-step:not(:last-child)::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">rcarranza.dev</a>
+    <ul>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="case-studies.html">Case Studies</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <a href="index.html" class="back-link"><span class="back-arrow">←</span> Back to Portfolio</a>
+    <h1>Incident Case Studies</h1>
+    <p class="subtitle">Real-world security incidents I responded to — documenting the attack, the response, and the lessons that shaped how I approach security today.</p>
+  </div>
+
+  <!-- CASE STUDY 1: RANSOMWARE -->
+  <div class="case-study">
+    <div class="cs-card">
+      <div class="cs-banner">
+        <div class="cs-banner-left">
+          <div class="cs-type cs-type-ransomware">⚠ Ransomware</div>
+          <div class="cs-title">Ransomware Attack & Incident Response</div>
+          <div class="cs-role">IT Support Engineer — First Responder & Internal Communications Lead</div>
+        </div>
+        <div class="cs-meta">
+          <div class="cs-meta-item">
+            <span class="cs-meta-label">Year</span>
+            <span>2023</span>
+          </div>
+          <div class="cs-meta-item">
+            <span class="cs-meta-label">Vector</span>
+            <span>Phishing → Privilege Escalation</span>
+          </div>
+          <div class="cs-meta-item">
+            <span class="cs-meta-label">Scope</span>
+            <span>File servers — 250+ users affected</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-outcome cs-outcome-success">
+        <span class="cs-outcome-icon">✓</span>
+        <span class="cs-outcome-text">Outcome: <span class="cs-outcome-highlight-green">Full recovery via backup restoration — no ransom paid</span></span>
+      </div>
+
+      <div class="cs-body">
+
+        <div class="cs-section">
+          <div class="cs-section-label">Background</div>
+          <p>While serving as an IT Support Engineer, I responded to a ransomware incident that encrypted company file servers across 8 locations. The attack required immediate coordinated response between IT, management, cyber insurance carriers, and external security vendors. I was the first IT responder on-scene and assumed the internal communications lead role for the duration of the incident.</p>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Detection — Indicators of Compromise</div>
+          <div class="ioc-list">
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-red"></div>All shared network files encrypted and inaccessible</div>
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-red"></div>Ransom note (README.txt) placed across affected directories with attacker demands</div>
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-red"></div>File extensions modified — consistent with ransomware encryption behavior</div>
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-red"></div>Discovered early morning — my manager identified files were inaccessible</div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Attack Chain — Root Cause Analysis</div>
+          <p>Post-incident forensics by the security vendor identified the following kill chain:</p>
+          <div class="attack-chain">
+            <div class="chain-step">
+              <div class="chain-phase">Initial Access</div>
+              <div class="chain-desc">Warehouse employee clicked a malicious phishing link, delivering malware to their workstation</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase">Execution</div>
+              <div class="chain-desc">Malware payload executed on the compromised endpoint</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase">Priv. Escalation</div>
+              <div class="chain-desc">Attacker escalated privileges from the employee's compromised workstation</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase">Lateral Movement</div>
+              <div class="chain-desc">Elevated credentials used to access file servers across the network</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase">Impact</div>
+              <div class="chain-desc">Ransomware payload deployed — encrypting shared network storage organization-wide</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Immediate Response</div>
+          <div class="ioc-list">
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-teal"></div>Affected servers immediately isolated from the network</div>
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-teal"></div>Network segmentation enforced to contain the blast radius</div>
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-teal"></div>Cyber insurance provider and backup/security vendors engaged</div>
+            <div class="ioc-item"><div class="ioc-bullet ioc-bullet-teal"></div>I assumed internal communications lead — status updates to 250+ staff across all locations</div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">My Role — Communications Lead</div>
+          <p>While my manager coordinated with external vendors and insurance carriers, I owned all internal stakeholder communications throughout the incident:</p>
+          <div class="ioc-list">
+            <div class="ioc-item"><div class="ioc-bullet"></div>Drafted and distributed timely status updates to all company staff</div>
+            <div class="ioc-item"><div class="ioc-bullet"></div>Fielded questions from employees and management on system availability</div>
+            <div class="ioc-item"><div class="ioc-bullet"></div>Coordinated with department heads on business continuity during the outage</div>
+            <div class="ioc-item"><div class="ioc-bullet"></div>Documented the incident timeline in real time for the post-incident report</div>
+            <div class="ioc-item"><div class="ioc-bullet"></div>Maintained calm, accurate messaging to prevent misinformation from spreading</div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Recovery</div>
+          <p>The organization recovered fully without paying the ransom. Clean, verified backups maintained prior to the incident enabled server restoration to a known-good state. Full system availability was restored through coordinated effort between IT, cyber insurance, and security vendors within the incident response window.</p>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Key Takeaways</div>
+          <div class="takeaways">
+            <div class="takeaway">
+              <div class="takeaway-num">01</div>
+              <p>The human element remains the most exploited attack vector — technical controls must be paired with user education</p>
+            </div>
+            <div class="takeaway">
+              <div class="takeaway-num">02</div>
+              <p>Rapid containment matters more than understanding full scope in the first minutes of response</p>
+            </div>
+            <div class="takeaway">
+              <div class="takeaway-num">03</div>
+              <p>Clear internal communication during an incident is as critical as technical response — confusion compounds damage</p>
+            </div>
+            <div class="takeaway">
+              <div class="takeaway-num">04</div>
+              <p>Backup integrity and restore testing are not optional — they are the last line of defense against ransomware</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CASE STUDY 2: BEC -->
+  <div class="case-study">
+    <div class="cs-card">
+      <div class="cs-banner">
+        <div class="cs-banner-left">
+          <div class="cs-type cs-type-bec">⚠ Business Email Compromise</div>
+          <div class="cs-title">CEO Impersonation & Social Engineering</div>
+          <div class="cs-role">IT Support Engineer — Incident Documentation & Analysis</div>
+        </div>
+        <div class="cs-meta">
+          <div class="cs-meta-item">
+            <span class="cs-meta-label">Year</span>
+            <span>2023</span>
+          </div>
+          <div class="cs-meta-item">
+            <span class="cs-meta-label">Vector</span>
+            <span>Spoofed executive email</span>
+          </div>
+          <div class="cs-meta-item">
+            <span class="cs-meta-label">Type</span>
+            <span>CEO Fraud — Gift card scheme</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-outcome cs-outcome-loss">
+        <span class="cs-outcome-icon">✗</span>
+        <span class="cs-outcome-text">Outcome: <span class="cs-outcome-highlight-amber">Financial loss incurred — gift card fraud — funds unrecoverable</span></span>
+      </div>
+
+      <div class="cs-body">
+
+        <div class="cs-section">
+          <div class="cs-section-label">Background</div>
+          <p>An attacker impersonated the company CEO via email, targeting an employee with an urgent request to purchase and transfer gift cards. The attack is a textbook example of CEO fraud — one of the most financially damaging forms of social engineering, and consistently one of the FBI IC3's top financial loss categories. The fraud was discovered after the transfer had already occurred.</p>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Attack Methodology</div>
+          <div class="attack-chain">
+            <div class="chain-step">
+              <div class="chain-phase chain-phase-amber">Reconnaissance</div>
+              <div class="chain-desc">Attacker identified the CEO's identity and an employee susceptible to authority-based requests</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase chain-phase-amber">Impersonation</div>
+              <div class="chain-desc">Crafted a convincing email spoofing the CEO's identity</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase chain-phase-amber">Social Engineering</div>
+              <div class="chain-desc">Framed the gift card purchase as an urgent personal favor from the executive — creating pressure to comply without verification</div>
+            </div>
+            <div class="chain-step">
+              <div class="chain-phase chain-phase-amber">Exfiltration</div>
+              <div class="chain-desc">Gift cards purchased, transfer codes sent to attacker — funds unrecoverable by the time fraud was identified</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Why This Attack Succeeded — Psychological Vectors</div>
+          <div class="takeaways">
+            <div class="takeaway">
+              <div class="takeaway-num">Authority Bias</div>
+              <p>Requests appearing to come from executives bypass normal scrutiny — employees defer to perceived authority</p>
+            </div>
+            <div class="takeaway">
+              <div class="takeaway-num">Urgency</div>
+              <p>Framing as an immediate favor reduced the time available for critical thinking and verification</p>
+            </div>
+            <div class="takeaway">
+              <div class="takeaway-num">Out-of-Band</div>
+              <p>Unusual request via email rather than normal business channels was not flagged as suspicious</p>
+            </div>
+            <div class="takeaway">
+              <div class="takeaway-num">No Verification</div>
+              <p>No callback procedure existed to verify executive requests of this nature before action was taken</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Controls That Would Have Prevented This</div>
+          <div class="controls-grid">
+            <div class="control-item">
+              <div class="control-icon">✉</div>
+              <div class="control-text">
+                <div class="control-name">Email Authentication</div>
+                <div class="control-desc">SPF, DKIM, and DMARC records prevent domain spoofing at the mail server level</div>
+              </div>
+            </div>
+            <div class="control-item">
+              <div class="control-icon">📞</div>
+              <div class="control-text">
+                <div class="control-name">Verification Policy</div>
+                <div class="control-desc">Any financial request from an executive should require direct phone verification</div>
+              </div>
+            </div>
+            <div class="control-item">
+              <div class="control-icon">🎓</div>
+              <div class="control-text">
+                <div class="control-name">Security Awareness Training</div>
+                <div class="control-desc">Staff trained specifically on CEO fraud patterns and social engineering tactics</div>
+              </div>
+            </div>
+            <div class="control-item">
+              <div class="control-icon">🏷</div>
+              <div class="control-text">
+                <div class="control-name">External Email Banners</div>
+                <div class="control-desc">Flagging emails originating outside the organization helps identify spoofing attempts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cs-section">
+          <div class="cs-section-label">Relevance to Current Security Practice</div>
+          <p>Business Email Compromise remains one of the highest-grossing cybercrime categories globally. As AI-generated voice and text become increasingly convincing, BEC attacks are evolving into deepfake audio impersonation and AI-crafted spear phishing at scale. This incident provided direct exposure to the human factors that make social engineering persistently effective — regardless of how sophisticated the technical controls may be.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Built by <span>Rolando Carranza</span> · Security Engineer · Phoenix, AZ</p>
+  </footer>
+
+</body>
+</html>
