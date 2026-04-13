@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Security Homelab — Rolando Carranza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #141618;
+      --bg2:       #1c1f22;
+      --bg3:       #222629;
+      --bg4:       #2a2e33;
+      --border:    #2e3338;
+      --border2:   #383d44;
+      --teal:      #2dd4bf;
+      --teal-dim:  #1a9e8f;
+      --teal-glow: rgba(45, 212, 191, 0.1);
+      --text:      #c8cdd4;
+      --text2:     #8b929c;
+      --bright:    #f0f4f8;
+      --name:      #f0f4f8;
+      --red:       #f87171;
+      --red-glow:  rgba(248, 113, 113, 0.1);
+      --amber:     #fbbf24;
+      --amber-glow: rgba(251, 191, 36, 0.1);
+      --green:     #4ade80;
+      --green-glow: rgba(74, 222, 128, 0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      height: 64px;
+      background: rgba(20, 22, 24, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--teal);
+      text-decoration: none;
+    }
+
+    nav ul { display: flex; gap: 0.4rem; list-style: none; }
+
+    nav a {
+      display: block;
+      padding: 0.45rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+
+    nav a:hover { color: var(--bright); background: var(--bg3); }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--teal);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      transition: all 0.15s;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.1s;
+    }
+
+    .back-link:hover { color: var(--bright); transform: translateX(-4px); }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 8rem 2.5rem 2rem;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--name);
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.2s;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--text2);
+      max-width: 640px;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.35s;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      background: var(--teal-glow);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--teal);
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards 0.15s;
+    }
+
+    .pill-dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 5rem;
+    }
+
+    .section-block { margin-bottom: 3.5rem; }
+    .section-block:last-child { margin-bottom: 0; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-block h2 {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-weight: 700;
+      color: var(--bright);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-block p {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.85;
+      max-width: 720px;
+    }
+
+    .section-block p + p { margin-top: 0.75rem; }
+
+    /* ── HARDWARE SPECS ── */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .spec-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .spec-card:hover {
+      border-color: rgba(45, 212, 191, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .spec-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--bright);
+      margin-bottom: 0.2rem;
+    }
+
+    .spec-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── STACK LAYERS ── */
+    .stack-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .stack-layer {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .stack-layer:hover {
+      border-color: rgba(45, 212, 191, 0.2);
+      transform: translateX(4px);
+    }
+
+    .layer-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    .layer-details {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .layer-tag {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      border-radius: 5px;
+      margin-right: 0.3rem;
+      margin-top: 0.4rem;
+    }
+
+    .layer-tag-teal  { background: rgba(45,212,191,0.1);  color: var(--teal);  border: 1px solid rgba(45,212,191,0.2); }
+    .layer-tag-grey  { background: rgba(139,146,156,0.08); color: var(--text2); border: 1px solid var(--border); }
+    .layer-tag-amber { background: rgba(251,191,36,0.1);  color: #fbbf24;      border: 1px solid rgba(251,191,36,0.2); }
+    .layer-tag-red   { background: rgba(248,113,113,0.1); color: #f87171;      border: 1px solid rgba(248,113,113,0.2); }
+
+    /* ── DEFENSE IN DEPTH TABLE ── */
+    .did-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+
+    .did-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: left;
+      padding: 0.8rem 1.25rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .did-table td {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      padding: 0.8rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .did-table tr:hover td { background: var(--bg2); }
+
+    .did-table .service-name {
+      font-weight: 600;
+      color: var(--bright);
+    }
+
+    .layers-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .layers-4 { background: var(--green-glow); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+    .layers-3 { background: var(--teal-glow); color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+    .layers-2 { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+    .layers-1 { background: var(--red-glow); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+
+    /* ── THREAT MODEL ── */
+    .threat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .threat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .threat-card:hover {
+      border-color: rgba(248, 113, 113, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .threat-name {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .threat-desc {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.65;
+      margin-bottom: 0.75rem;
+    }
+
+    .threat-mitigation {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--teal);
+      line-height: 1.6;
+    }
+
+    .threat-mitigation::before {
+      content: '↳ Mitigation: ';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── DESIGN DECISIONS ── */
+    .decisions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .decision {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem 1.75rem;
+    }
+
+    .decision-q {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .decision-a {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.75;
+      max-width: 700px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); max-width: 1080px; margin: 0 auto; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text2);
+    }
+
+    footer span { color: var(--teal); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      nav { padding: 0 1.5rem; }
+      .page-header { padding: 7rem 1.5rem 2rem; }
+      .content { padding: 2rem 1.5rem 3rem; }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .stack-layer { grid-template-columns: 1fr; gap: 0.5rem; }
+      .threat-grid { grid-template-columns: 1fr; }
+      .did-table { font-size: 0.8rem; }
+    }
+
+    @media (max-width: 560px) {
+      nav ul { display: none; }
+      .specs-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">rcarranza.dev</a>
+    <ul>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="case-studies.html">Case Studies</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <a href="index.html#projects" class="back-link"><span>←</span> Back to Projects</a>
+    <div class="status-pill"><div class="pill-dot"></div> Active Project</div>
+    <h1>AI Security Homelab</h1>
+    <p class="subtitle">A locally hosted LLM infrastructure built on hardened Ubuntu — designed with defense-in-depth principles, threat-modeled for AI-specific attack vectors, and fully owned end-to-end with zero vendor dependency.</p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- HARDWARE -->
+    <div class="section-block">
+      <div class="section-label">hardware</div>
+      <h2>The Foundation</h2>
+      <p>Repurposed HP ProBook 650 G8 running headless Ubuntu 24.04 LTS as a dedicated server. No cloud dependencies — every byte stays on the machine.</p>
+
+      <div class="specs-grid">
+        <div class="spec-card">
+          <div class="spec-value">i5-1135G7</div>
+          <div class="spec-label">CPU — 11th Gen</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">32 GB</div>
+          <div class="spec-label">RAM</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">Ubuntu 24.04</div>
+          <div class="spec-label">Headless Server</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">Static IP</div>
+          <div class="spec-label">192.168.0.226</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-bottom: 3.5rem;"></div>
+
+    <!-- STACK -->
+    <div class="section-block">
+      <div class="section-label">architecture</div>
+      <h2>The Stack</h2>
+      <p>Every component chosen for a reason. Every port, every binding, every network boundary is a deliberate security decision.</p>
+
+      <div class="stack-layers">
+        <div class="stack-layer">
+          <div class="layer-name">Nginx Reverse Proxy</div>
+          <div>
+            <div class="layer-details">HTTPS termination with Let's Encrypt TLS 1.2/1.3. HTTP auto-redirects to HTTPS. LAN-only access via UFW — no ports forwarded to the internet.</div>
+            <div><span class="layer-tag layer-tag-teal">Port 443</span><span class="layer-tag layer-tag-grey">Let's Encrypt</span><span class="layer-tag layer-tag-teal">TLS 1.2/1.3</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">Open WebUI</div>
+          <div>
+            <div class="layer-details">Chat interface running in a Docker container on an isolated network. Bound to localhost only — accessible exclusively through the Nginx proxy. Admin-only access with signups disabled.</div>
+            <div><span class="layer-tag layer-tag-teal">Docker</span><span class="layer-tag layer-tag-grey">127.0.0.1:3000</span><span class="layer-tag layer-tag-teal">RAG Enabled</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">Ollama LLM Runner</div>
+          <div>
+            <div class="layer-details">Serves local language models via API. Accessible only from the Docker subnet via UFW rules. Currently running Llama 3.2 (2GB, fast on CPU). Qwen 2.5 32B downloaded and staged for GPU acceleration.</div>
+            <div><span class="layer-tag layer-tag-teal">Llama 3.2</span><span class="layer-tag layer-tag-amber">Qwen 2.5 32B (staged)</span><span class="layer-tag layer-tag-grey">Port 11434</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">Docker Network</div>
+          <div>
+            <div class="layer-details">Isolated bridge network (172.18.0.0/16) separating container traffic from the host. UFW rules restrict container-to-host communication to only the Ollama API port.</div>
+            <div><span class="layer-tag layer-tag-teal">homelab-ai-net</span><span class="layer-tag layer-tag-grey">172.18.0.0/16</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">DuckDNS + HTTPS</div>
+          <div>
+            <div class="layer-details">Custom domain (rolandolab.duckdns.org) pointing to LAN IP. SSL certificate obtained via DNS challenge — no ports exposed to the internet. Auto-renewing via Certbot. Enables OAuth 2.0 flows for future integrations.</div>
+            <div><span class="layer-tag layer-tag-teal">DNS Challenge</span><span class="layer-tag layer-tag-grey">No Public Exposure</span><span class="layer-tag layer-tag-teal">Auto-Renewal</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-bottom: 3.5rem;"></div>
+
+    <!-- SECURITY -->
+    <div class="section-block">
+      <div class="section-label">security hardening</div>
+      <h2>Defense in Depth</h2>
+      <p>Every service is evaluated by how many independent security layers protect it. The goal is never a single point of failure.</p>
+
+      <table class="did-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Protection Layers</th>
+            <th>Depth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="service-name">SSH (Port 22)</td>
+            <td>Binding + UFW + Key Auth + Fail2Ban</td>
+            <td><span class="layers-badge layers-4">4 layers</span></td>
+          </tr>
+          <tr>
+            <td class="service-name">HTTP/HTTPS (80/443)</td>
+            <td>Binding + UFW + Nginx Proxy</td>
+            <td><span class="layers-badge layers-3">3 layers</span></td>
+          </tr>
+          <tr>
+            <td class="service-name">Open WebUI (3000)</td>
+            <td>Localhost Bind + Nginx</td>
+            <td><span class="layers-badge layers-2">2 layers</span></td>
+          </tr>
+          <tr>
+            <td class="service-name">Ollama (11434)</td>
+            <td>UFW Only (was localhost + UFW)</td>
+            <td><span class="layers-badge layers-1">1 layer ⚠</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top: 1rem;">Additional hardening: AppArmor (MAC enforcement), Auditd (file integrity monitoring on /etc/passwd, /etc/sudoers, sshd_config), unattended security patches, root account locked, lid close and sleep targets disabled for server uptime.</p>
+    </div>
+
+    <div class="divider" style="margin-bottom: 3.5rem;"></div>
+
+    <!-- THREAT MODEL -->
+    <div class="section-block">
+      <div class="section-label">threat model</div>
+      <h2>AI-Specific Attack Vectors</h2>
+      <p>This lab isn't just running an LLM — it's designed to understand and defend against the attack surface that comes with it.</p>
+
+      <div class="threat-grid">
+        <div class="threat-card">
+          <div class="threat-name">Prompt Injection via Email</div>
+          <div class="threat-desc">Hidden instructions in email body — white text, HTML comments, Unicode tricks — designed to manipulate LLM behavior when processing emails.</div>
+          <div class="threat-mitigation">Metadata-only processing. The AI never reads email body content.</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-name">BEC-via-LLM</div>
+          <div class="threat-desc">Attacker crafts email content designed to make an AI misclassify a malicious request as legitimate, bypassing traditional BEC detection.</div>
+          <div class="threat-mitigation">Human-in-the-loop approval for all write actions. No autonomous execution.</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-name">Steganography in Attachments</div>
+          <div class="threat-desc">Instructions hidden in image pixels or document metadata, invisible to the user but potentially parsed by an AI processing the file.</div>
+          <div class="threat-mitigation">Attachment processing restricted to metadata extraction only.</div>
+        </div>
+        <div class="threat-card">
+          <div class="threat-name">QR Code Injection</div>
+          <div class="threat-desc">Encoded URLs or instructions embedded in images within emails, designed to be decoded and followed by AI vision capabilities.</div>
+          <div class="threat-mitigation">No image content analysis on email attachments. Vision features disabled for email pipeline.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-bottom: 3.5rem;"></div>
+
+    <!-- DESIGN DECISIONS -->
+    <div class="section-block">
+      <div class="section-label">design decisions</div>
+      <h2>Why This Way?</h2>
+      <p>Every architecture choice has a security rationale. Here are the ones that matter most.</p>
+
+      <div class="decisions">
+        <div class="decision">
+          <div class="decision-q">Why local instead of cloud APIs?</div>
+          <div class="decision-a">Zero vendor dependency. No token costs, no policy changes breaking agents overnight, no data leaving the machine. A friend's Claude-powered Discord bot lost its persona when Anthropic changed API behavior. Another friend's agentic cron job ran up a massive bill from an infinite retry loop. We own the entire stack — the model, the data, and the infrastructure.</div>
+        </div>
+        <div class="decision">
+          <div class="decision-q">Why metadata-only email processing?</div>
+          <div class="decision-a">The email body is the single largest prompt injection attack surface. By restricting the AI to metadata — sender domain, date, has-attachment, subject line — we eliminate the entire category of attacks that rely on hidden content in email bodies. The tradeoff is functionality, but the security gain is worth it.</div>
+        </div>
+        <div class="decision">
+          <div class="decision-q">Why human-in-the-loop for all write actions?</div>
+          <div class="decision-a">An AI that can read your email, check your calendar, and take actions autonomously is one prompt injection away from sending emails on your behalf. Every write action — calendar events, task creation, email responses — requires explicit human approval before execution.</div>
+        </div>
+        <div class="decision">
+          <div class="decision-q">Why Ollama on 0.0.0.0 instead of localhost?</div>
+          <div class="decision-a">Docker containers can't reach localhost on the host machine without --network host mode (which sacrifices Docker network isolation). Binding Ollama to all interfaces and restricting access via UFW to only the Docker subnet was the best tradeoff — but it reduced defense from 2 layers to 1. This is a known risk, documented and tracked.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" style="margin-bottom: 3.5rem;"></div>
+
+    <!-- ROADMAP -->
+    <div class="section-block">
+      <div class="section-label">what's next</div>
+      <h2>Roadmap</h2>
+      <p>This lab is a living project. Here's where it's headed.</p>
+
+      <div class="stack-layers">
+        <div class="stack-layer">
+          <div class="layer-name">Gmail OAuth + API</div>
+          <div>
+            <div class="layer-details">Metadata-only email sorting. Google Calendar and Tasks integration with human approval for all write actions. HTTPS prerequisites already met.</div>
+            <div><span class="layer-tag layer-tag-amber">Next Up</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">Threat Intel Pipeline</div>
+          <div>
+            <div class="layer-details">Automated scraping from MITRE ATLAS, NVD/NIST, OWASP LLM Top 10, and ArXiv. Content stored in ChromaDB, monthly report generated and emailed.</div>
+            <div><span class="layer-tag layer-tag-grey">Planned</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">GPU Acceleration</div>
+          <div>
+            <div class="layer-details">GTX 1070 (8GB VRAM) on a separate rig running Ollama with CUDA. Unlocks Qwen 2.5 32B at full speed and enables larger context windows.</div>
+            <div><span class="layer-tag layer-tag-grey">Planned</span></div>
+          </div>
+        </div>
+        <div class="stack-layer">
+          <div class="layer-name">SOC Dashboard</div>
+          <div>
+            <div class="layer-details">Grafana + Loki + Prometheus for centralized log visualization, system health monitoring, and security event alerting.</div>
+            <div><span class="layer-tag layer-tag-grey">Future</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Built by <span>Rolando Carranza</span> · Security Engineer · Phoenix, AZ</p>
+  </footer>
+
+</body>
+</html>
