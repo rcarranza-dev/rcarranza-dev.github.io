@@ -736,13 +736,16 @@
           <span class="project-status status-active">Active</span>
         </div>
         <h3>AI Security Homelab</h3>
-        <p>Locally hosted LLM stack on hardened Ubuntu 24.04 — Ollama, Open WebUI, Nginx reverse proxy, Docker isolated networking. Threat modeled for prompt injection, BEC-via-LLM, and steganography vectors. Defense-in-depth with UFW, Fail2Ban, AppArmor, and auditd.</p>
+        <p>Locally hosted LLM stack on hardened Ubuntu 24.04 — Ollama, Open WebUI with RAG, HTTPS via Let's Encrypt, and an automated threat intel pipeline that scrapes CISA KEV, NVD, MITRE ATLAS, and OWASP data, generates reports via local LLM, and emails them monthly. Defense-in-depth with UFW, Fail2Ban, AppArmor, and auditd.</p>
         <div class="tags">
           <span class="tag tag-teal">Ubuntu</span>
           <span class="tag tag-teal">Docker</span>
           <span class="tag tag-teal">Ollama</span>
           <span class="tag tag-teal">Nginx</span>
           <span class="tag tag-grey">Llama 3.2</span>
+          <span class="tag tag-teal">HTTPS</span>
+          <span class="tag tag-amber">RAG</span>
+          <span class="tag tag-amber">Threat Intel Pipeline</span>
         </div>
         <a href="homelab.html" class="project-link">View Details →</a>
       </div>
